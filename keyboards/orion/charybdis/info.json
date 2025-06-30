@@ -1,19 +1,8 @@
 {
-    "rgb_matrix": {
-        "animations": {
-            "cycle_left_right": true
-        },
-        "default": {
-            "speed": 32,
-            "val": 64
-        },
-        "sleep": true
-    },
-    "split": {
-        "transport": {
-            "sync": {
-                "matrix_state": true
-            }
-        }
+    "manufacturer": "Bastard Keyboards",
+    "maintainer": "Quentin Lebastar",
+    "url": "https://bastardkb.com",
+    "usb": {
+        "vid": "0x5773"
     }
 }

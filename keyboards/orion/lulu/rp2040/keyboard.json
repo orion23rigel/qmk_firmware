@@ -13,9 +13,11 @@
   "split": {
     "serial": {
       "pin": "GP1"
+	  "driver": "vendor"
     }
   },
   "ws2812": {
     "pin": "GP0"
+	"driver": "vendor"
   }
 }
