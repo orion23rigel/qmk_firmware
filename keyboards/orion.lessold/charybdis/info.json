@@ -1,0 +1,8 @@
+{
+    "manufacturer": "Bastard Keyboards",
+    "maintainer": "Quentin Lebastar",
+    "url": "https://bastardkb.com",
+    "usb": {
+        "vid": "0x5773"
+    }
+}
