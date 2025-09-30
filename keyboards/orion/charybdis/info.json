@@ -1,5 +1,6 @@
 {
     "keyboard_name": "Orion Charybdis",
+	"url": "https://github.com/Bastardkb/Charybdis",
     "diode_direction": "ROW2COL",
     "features": {
         "bootmagic": true,
@@ -70,6 +71,7 @@
             {"x": 128, "y": 52, "flags": 1},
             {"x": 144, "y": 52, "flags": 1}
         ],
+		"split_count": [29, 29]
 		"animations": {
             "alphas_mods": true,
             "gradient_up_down": true,
@@ -120,7 +122,6 @@
             "val": 64
         },
         "sleep": true
-        "split_count": [29, 29]
     },
     "split": {
         "transport": {
