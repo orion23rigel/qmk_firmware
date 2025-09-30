@@ -58,7 +58,24 @@ combo_t key_combos[] = {
 // MACROS
 
 enum custom_keycodes {
-    ENDASH = SAFE_RANGE,
+    EN_DASH = SAFE_RANGE,
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case EN_DASH:
+      if (record->event.pressed) {
+        // Simulate the Alt + 0150 key combination
+        register_code(KC_LALT);   // Press Left Alt
+        tap_code16(KC_0);         // Tap the 0 key (for the 0150 sequence)
+        tap_code16(KC_1);         // Tap the 1 key
+        tap_code16(KC_5);         // Tap the 5 key
+        tap_code16(KC_0);         // Tap the 0 key
+        unregister_code(KC_LALT); // Release Left Alt
+      }
+      return false;  // Don't process this key normally
+    }
+    return true;
 };
 
 // clang-format off
@@ -78,7 +95,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		KC_TRNS, KC_NO, KC_LEFT, KC_DOWN, KC_RGHT, LALT(KC_LEFT), KC_PPLS, KC_P4, KC_P5, KC_P6, KC_PMNS, KC_PEQL, 
 		KC_TRNS, KC_NO, KC_PGUP, KC_PGDN, LALT(KC_LEFT), LALT(KC_RGHT), KC_PAST, KC_P1, KC_P2, KC_P3, KC_PSLS, KC_PDOT, 
 		KC_TRNS, KC_TRNS, KC_DEL, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_P0),
-    [3] = LAYOUT(TD(TD_ESC_TO_0), KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, ENDASH, 
+    [3] = LAYOUT(TD(TD_ESC_TO_0), KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, EN_DASH, 
 		KC_TRNS, KC_DEL, KC_TRNS, DPI_RMOD, S_D_RMOD, LCTL(KC_F4), KC_TRNS, S_D_MOD, DPI_MOD, KC_TRNS, KC_TRNS, KC_TRNS, 
 		KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, LALT(KC_LEFT), KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, 
 		KC_TRNS, KC_TRNS, DRGSCRL, SNIPING, LALT(KC_LEFT), LALT(KC_RGHT), KC_TRNS, KC_TRNS, SNIPING, DRGSCRL, MS_BTN3, KC_TRNS, KC_TRNS, MS_BTN3, KC_TRNS, 
@@ -91,16 +108,3 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 void rgb_matrix_update_pwm_buffers(void);
 #endif
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-    case ENDASH:
-        if (record->event.pressed) {
-            // when keycode ENDASH is pressed
-            SEND_STRING(SS_DOWN(X_LALT)"0150"SS_UP(X_LALT));
-        } else {
-            // when keycode ENDASH is released
-        }
-        break;
-    }
-    return true;
-};
