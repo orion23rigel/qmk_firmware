@@ -61,20 +61,6 @@ enum custom_keycodes {
     ENDASH = SAFE_RANGE,
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-    case ENDASH:
-        if (record->event.pressed) {
-            // when keycode ENDASH is pressed
-            SEND_STRING(SS_DOWN(X_LALT)"0150"SS_UP(X_LALT));
-        } else {
-            // when keycode ENDASH is released
-        }
-        break;
-    }
-    return true;
-};
-
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT(KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, 
@@ -104,3 +90,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Forward-declare this helper function since it is defined in rgb_matrix.c.
 void rgb_matrix_update_pwm_buffers(void);
 #endif
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case ENDASH:
+        if (record->event.pressed) {
+            // when keycode ENDASH is pressed
+            SEND_STRING(SS_DOWN(X_LALT)"0150"SS_UP(X_LALT));
+        } else {
+            // when keycode ENDASH is released
+        }
+        break;
+    }
+    return true;
+};
