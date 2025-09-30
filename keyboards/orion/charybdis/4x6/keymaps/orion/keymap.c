@@ -16,8 +16,6 @@
  */
 #include QMK_KEYBOARD_H
 
-set_unicode_input_mode(UC_WINC);
-
 #ifndef POINTING_DEVICE_ENABLE
 #    define DRGSCRL KC_NO
 #    define DPI_MOD KC_NO
