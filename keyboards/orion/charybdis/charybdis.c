@@ -27,7 +27,7 @@
 
 #ifdef POINTING_DEVICE_ENABLE
 #    ifndef CHARYBDIS_MINIMUM_DEFAULT_DPI
-#        define CHARYBDIS_MINIMUM_DEFAULT_DPI 400
+#        define CHARYBDIS_MINIMUM_DEFAULT_DPI 200
 #    endif // CHARYBDIS_MINIMUM_DEFAULT_DPI
 
 #    ifndef CHARYBDIS_DEFAULT_DPI_CONFIG_STEP
@@ -35,7 +35,7 @@
 #    endif // CHARYBDIS_DEFAULT_DPI_CONFIG_STEP
 
 #    ifndef CHARYBDIS_MINIMUM_SNIPING_DPI
-#        define CHARYBDIS_MINIMUM_SNIPING_DPI 200
+#        define CHARYBDIS_MINIMUM_SNIPING_DPI 100
 #    endif // CHARYBDIS_MINIMUM_SNIPER_MODE_DPI
 
 #    ifndef CHARYBDIS_SNIPING_DPI_CONFIG_STEP
@@ -54,8 +54,8 @@
 typedef union {
     uint8_t raw;
     struct {
-        uint8_t pointer_default_dpi : 4; // 16 steps available.
-        uint8_t pointer_sniping_dpi : 2; // 4 steps available.
+        uint8_t pointer_default_dpi : 2; // 16 steps available.
+        uint8_t pointer_sniping_dpi : 1; // 4 steps available.
         bool    is_dragscroll_enabled : 1;
         bool    is_sniping_enabled : 1;
     } __attribute__((packed));
@@ -395,6 +395,81 @@ bool shutdown_kb(bool jump_to_bootloader) {
 #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_set_color_all(RGB_RED);
     rgb_matrix_update_pwm_buffers();
+	/**
+	 * \brief LEDs index.
+	 *
+	 * ╭────────────────────────╮                 ╭────────────────────────╮
+	 *    0   7   8  15  16  20                     49  45  44  37  36  29
+	 * ├────────────────────────┤                 ├────────────────────────┤
+	 *    1   6   9  14  17  21                     50  46  43  38  35  30
+	 * ├────────────────────────┤                 ├────────────────────────┤
+	 *    2   5  10  13  18  22                     51  47  42  39  34  31
+	 * ├────────────────────────┤                 ├────────────────────────┤
+	 *    3   4  11  12  19  23                     52  48  41  40  33  32
+	 * ╰────────────────────────╯                 ╰────────────────────────╯
+	 *                       26  27  28     53  54  XX
+	 *                           25  24     55  XX
+	 *                     ╰────────────╯ ╰────────────╯
+	 *
+	 * Note: the LED config simulates 58 LEDs instead of the actual 56 to prevent
+	 * confusion when testing LEDs during assembly when handedness is not set
+	 * correctly.  Those fake LEDs are bound to the physical bottom-left corner.
+	 */
+	led_config_t g_led_config = { {
+		/* Key Matrix to LED index. */
+		// Left split.
+		{      0,      7,      8,     15,     16,     20 }, // Num row
+		{      1,      6,      9,     14,     17,     21 }, // Top row
+		{      2,      5,     10,     13,     18,     22 }, // Middle row
+		{      3,      4,     11,     12,     19,     23 }, // Bottom row
+		{ NO_LED,     28,     24,     26,     27,     25 }, // Thumb cluster
+		// Right split.
+		{     29,     36,     37,     44,     45,     49 }, // Num row
+		{     30,     35,     38,     43,     46,     50 }, // Top row
+		{     31,     34,     39,     42,     47,     51 }, // Middle row
+		{     32,     33,     40,     41,     48,     52 }, // Bottom row
+		{ NO_LED,     53,     55,     54, NO_LED, NO_LED }, // Thumb cluster
+	}, {
+		/* LED index to physical position. */
+		// Left split.
+		/* index=0  */ {   0,   0 }, {   0,  12 }, {   0,  24 }, {   0,  36 }, // col 1 (left most)
+		/* index=4  */ {  16,  36 }, {  16,  24 }, {  16,  12 }, {  16,   0 }, // col 2
+		/* index=8  */ {  32,   0 }, {  32,  12 }, {  32,  24 }, {  32,  36 },
+		/* index=12 */ {  48,  36 }, {  48,  24 }, {  48,  12 }, {  48,   0 },
+		/* index=16 */ {  64,   0 }, {  64,  12 }, {  64,  24 }, {  64,  36 },
+		/* index=20 */ {  80,   0 }, {  80,  12 }, {  80,  24 }, {  80,  36 },
+		/* index=24 */ { 112,  64 }, {  96,  64 }, {  80,  52 },
+		/* index=27 */ {  96,  52 }, { 112,  52 },
+		// Right split.
+		/* index=29 */ { 224,   0 }, { 224,  12 }, { 224,  24 }, { 224,  36 }, // col 12 (right most)
+		/* index=33 */ { 208,  36 }, { 208,  24 }, { 208,  12 }, { 208,   0 }, // col 11
+		/* index=37 */ { 192,   0 }, { 192,  12 }, { 192,  24 }, { 192,  36 },
+		/* index=41 */ { 176,  36 }, { 176,  24 }, { 176,  12 }, { 176,   0 },
+		/* index=45 */ { 160,   0 }, { 160,  12 }, { 160,  24 }, { 160,  36 },
+		/* index=49 */ { 144,   0 }, { 144,  12 }, { 144,  24 }, { 144,  36 },
+		/* index=53 */ { 112,  52 }, { 128,  64 }, { 112,  64 },
+		/* index=56 */ {   0,   0 }, {   0,   0 },
+	}, {
+		/* LED index to flag. */
+		// Left split.
+		/* index=0  */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, // col 1
+		/* index=4  */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, // col 2
+		/* index=8  */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=12 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=16 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=20 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=24 */ LED_FLAG_MODIFIER, LED_FLAG_MODIFIER, LED_FLAG_MODIFIER, // Thumb cluster top
+		/* index=27 */ LED_FLAG_MODIFIER, LED_FLAG_MODIFIER,                    // Thumb cluster bottom
+		// Right split.
+		/* index=29 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, // col 12
+		/* index=33 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, // col 11
+		/* index=37 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=41 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=45 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=49 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT,
+		/* index=53 */ LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, LED_FLAG_KEYLIGHT, // Thumb cluster
+		/* index=55 */ LED_FLAG_MODIFIER, LED_FLAG_MODIFIER,                    // Thumb cluster fakes
+	} };
 #endif // RGB_MATRIX_ENABLE
     return true;
 }
