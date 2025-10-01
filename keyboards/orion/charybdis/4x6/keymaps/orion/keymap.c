@@ -66,7 +66,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case ENDASH:
         if (record->event.pressed) {
             // when keycode ENDASH is pressed
-            SEND_STRING(SS_LALT("0" "1" "5" "0" SS_UP(X_LALT));
+            SEND_STRING( SS_DOWN(X_LALT) SS_TAP(X_P0) SS_TAP(X_P1) SS_TAP(X_P5) SS_TAP(X_P0) SS_UP(X_LALT) );
         } else {
             // when keycode ENDASH is released
         }
