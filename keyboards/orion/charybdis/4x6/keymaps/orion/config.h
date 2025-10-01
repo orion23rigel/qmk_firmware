@@ -18,7 +18,7 @@
 
 #define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
-#define FLOW_TAP_TERM 100
+#define FLOW_TAP_TERM 70
 
 #ifdef VIA_ENABLE
 /* VIA configuration. */
