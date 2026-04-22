@@ -1,6 +1,7 @@
 {
     "keyboard_name": "Mino",
     "manufacturer": "ShandonCodes",
+    "url": "https://qmk.fm/keyboards/",
     "maintainer": "ShandonCodes",
     "usb": {
         "vid": "0x7877",

@@ -72,7 +72,14 @@ __attribute__((weak)) void trackball_check_click(bool pressed, report_mouse_t* m
     }
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
+    if (true) {
+        xprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
+    }
+
+
+    if (!process_record_user(keycode, record)) { return false; }
+
 /* If Mousekeys is disabled, then use handle the mouse button
  * keycodes.  This makes things simpler, and allows usage of
  * the keycodes in a consistent manner.  But only do this if
@@ -88,7 +95,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         }
         pointing_device_set_report(currentReport);
         pointing_device_send();
-        return false;
     }
 #endif
 

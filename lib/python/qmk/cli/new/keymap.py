@@ -57,13 +57,7 @@ def prompt_keyboard():
 If you're unsure you can view a full list of supported keyboards with {fg_yellow}qmk list-keyboards{style_reset_all}.
 
 Keyboard Name? """
-    kb_name = question(prompt)
-
-    try:
-        # Resolve any keyboard alias
-        return keyboard_folder(kb_name)
-    except ValueError:
-        return None
+    return question(prompt)
 
 
 def prompt_user():
@@ -111,7 +105,9 @@ def new_keymap(cli):
     converter = cli.config.new_keymap.converter if cli.args.skip_converter or cli.config.new_keymap.converter else prompt_converter(kb_name)
 
     # check directories
-    if not is_keyboard(kb_name):
+    try:
+        kb_name = keyboard_folder(kb_name)
+    except ValueError:
         cli.log.error(f'Keyboard {{fg_cyan}}{kb_name}{{fg_reset}} does not exist! Please choose a valid name.')
         return False
 
@@ -130,7 +126,7 @@ def new_keymap(cli):
         return False
 
     if not validate_keymap_name(user_name):
-        cli.log.error(f'Keymap name {{fg_cyan}}{user_name}{{fg_reset}} must contain only {{fg_cyan}}a-z{{fg_reset}}, {{fg_cyan}}0-9{{fg_reset}} and {{fg_cyan}}_{{fg_reset}}! Please choose a different name.')
+        cli.log.error('Keymap names must contain only {fg_cyan}a-z{fg_reset}, {fg_cyan}0-9{fg_reset} and {fg_cyan}_{fg_reset}! Please choose a different name.')
         return False
 
     if keymap_path_new.exists():

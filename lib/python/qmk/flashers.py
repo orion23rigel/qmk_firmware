@@ -136,10 +136,6 @@ def _find_serial_port(vid, pid):
     return None
 
 
-def _flash_bootloadhid(file):
-    cli.run(['bootloadHID', '-r', file], capture_output=False)
-
-
 def _flash_caterina(details, file):
     port = _find_serial_port(details[0], details[1])
     if port:
@@ -157,12 +153,11 @@ def _flash_atmel_dfu(mcu, file):
 
 
 def _flash_hid_bootloader(mcu, details, file):
-    cmd = None
     if details == 'halfkay':
-        if shutil.which('teensy_loader_cli'):
-            cmd = 'teensy_loader_cli'
-        elif shutil.which('teensy-loader-cli'):
+        if shutil.which('teensy-loader-cli'):
             cmd = 'teensy-loader-cli'
+        elif shutil.which('teensy_loader_cli'):
+            cmd = 'teensy_loader_cli'
 
     # Use 'hid_bootloader_cli' for QMK HID and as a fallback for HalfKay
     if not cmd:
@@ -222,8 +217,6 @@ def flasher(mcu, file):
     time.sleep(1)
     if bl == 'atmel-dfu':
         _flash_atmel_dfu(details, file)
-    elif bl == 'bootloadhid':
-        _flash_bootloadhid(file)
     elif bl == 'caterina':
         if _flash_caterina(details, file):
             return (True, "The Caterina bootloader was found but is not writable. Check 'qmk doctor' output for advice.")

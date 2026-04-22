@@ -137,6 +137,7 @@ void haptic_toggle(void) {
     } else {
         haptic_enable();
     }
+    eeconfig_update_haptic(&haptic_config);
 }
 
 void haptic_feedback_toggle(void) {
